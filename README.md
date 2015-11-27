@@ -30,19 +30,21 @@ Several other files are also provided in each folder:
 
 The `scripts` folder contains several tools for generating the frequency data from the corpus and formatting the JSON files. Although tailored for use with the ASP corpus, they may also be of general use.
 
-For example, the script `corpus_freq.rb` will generate a frequency list for all the files in a specified directory. You can download the entire [ASP corpus](https://github.com/global-asp/asp-source) and run this on the individual directories yourself, or point it at any other directory of text files and get frequency lists that won't choke on Unicode.
+For example, the script `corpus_freq.rb` will generate a frequency list for all the words in a specified file or pipe, or all the files in a given directory. You can download the entire [ASP corpus](https://github.com/global-asp/asp-source) and run this on the individual directories yourself, or point it at any other directory of text files and get frequency lists that won't choke on Unicode.
 
-The script `file_freq.rb` does the same thing as `corpus_freq.rb`, but works on individual files instead of directories. It could be (and may one day be) incorporated into the other script, but it is mostly provided as a legacy file, and to accommodate use with pipes (e.g. something like `cat my_directory/*.txt | ruby file_freq.rb`.
+You can also use `corpus_freq.rb` with pipes, e.g.:
 
-The `file_freq.rb` and `corpus_freq.rb` scripts can also be used together with `salient.rb` to create a list of the most "salient" or interesting/unusual words in a text or corpus. After configuring `salient.rb`, you can issue the following command:
+    cat my_directory/*.txt | ruby corpus_freq.rb
 
-    ruby file_freq.rb somefile.txt | ruby salient.rb
+The `corpus_freq.rb` script can also be used together with `salient.rb` to create a list of the most "salient" or interesting/unusual words in a text or corpus. Before using `salient.rb`, you need to configure the language you want to use and the location of a local directory containing lists of stopwords by editing the script file. If you have cloned the repository and want to use one of the stoplists in this repo, you can set the stoplist directory to `..`. After configuring `salient.rb`, you can issue the following command:
+
+    ruby corpus_freq.rb somefile.txt | ruby salient.rb
 
 or
 
     ruby corpus_freq.rb /path/to/some/directory | ruby salient.rb
 
-This will generate a list of the most frequent words in the text and then filter out all stopwords, which should leave only the most characteristic words from that particular text.
+This will generate a list of the most frequent words in the text and then filter out all stopwords, which should leave only the most unique / characteristic / interesting words from that particular text.
 
 ## Methodology
 
