@@ -13,6 +13,8 @@
 # =or=
 # ruby cat sometext.txt | corpus_freq.rb
 
+require "unicode_utils/downcase"
+
 def frequency_list(corpus)
   freq = Hash.new(0)
 
@@ -24,7 +26,7 @@ def frequency_list(corpus)
 #   remove extraneous apostrophes and hyphens
 #   we want to keep the ones that are
 #   integral parts of actual words
-    w = w.gsub(/''+|'$|\s+'\s+|\-\-+|^\-|\-$|\s+\-\s+/, "").downcase
+    w = UnicodeUtils.downcase(w.gsub(/''+|'$|\s+'\s+|\-\-+|^\-|\-$|\s+\-\s+/, ""))
 #   but don't touch "'n" (af)
     unless w == "'n"
       w = w.gsub(/^'/, "")
