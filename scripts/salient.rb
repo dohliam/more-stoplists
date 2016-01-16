@@ -13,6 +13,7 @@
 # (process any text file using a pipe)
 
 require 'json'
+require 'optparse'
 
 # Stoplist configuration
 stoplist_dir = ""
@@ -25,6 +26,23 @@ stoplist_dir = ""
 lang = ""
 # the iso code of the language for the stoplist you want
 # to use
+
+# parse command-line options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on("-l", "--language CODE", "Language code to use for processing") { |v| options[:language] = v }
+  opts.on("-s", "--stoplist-dir DIR", "Directory containing stoplist files") { |v| options[:stoplist_dir] = v }
+
+end.parse!
+
+if options[:language]
+  lang = options[:language]
+end
+if options[:stoplist_dir]
+  stoplist_dir = options[:stoplist_dir]
+end
 
 file_content = ARGF.read
 

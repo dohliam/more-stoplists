@@ -14,13 +14,15 @@
 # ruby cat sometext.txt | corpus_freq.rb
 
 require "unicode_utils/downcase"
+require_relative 'stats.rb'
 
 def frequency_list(corpus)
   freq = Hash.new(0)
+  corpus = filter_metadata(corpus)
 
 #   regex for strings that are words
 #   can't just be \w+ for most languages
-  words_re = /[^\n\s$0-9”“"\.,\!\?\(\)\[\]#&~`‘’:;<>–…´\*\/«»]+/
+  words_re = /[^\n\s$0-9”“"\.,\!\?\(\)\[\]#&~`‘’:;<>–…´\*\/«»،؟।]+/
 
   corpus.scan(words_re).each do |w|
 #   remove extraneous apostrophes and hyphens
@@ -38,7 +40,7 @@ def frequency_list(corpus)
 
   output = ""
   freq.keys.sort.each {|k| output << freq[k].to_s + "\t" + k + "\n"}
-  puts output.split("\n").sort_by{|f| f.split("\t")[0].to_i }.reverse
+  output.split("\n").sort_by{|f| f.split("\t")[0].to_i }.reverse
 end
 
 def dir_to_corpus(dir, corpus_container)
@@ -54,6 +56,11 @@ def dir_to_corpus(dir, corpus_container)
   end
 end
 
+def filter_metadata(text)
+  # filter out metadata section of ASP files
+  text.gsub(/^\* (License|Text|Illustration|Adaptation|Translation|Language): .*\n/, "")
+end
+
 corpus = ""
 
 # read input from a file, directory, or pipe
@@ -62,14 +69,15 @@ if ARGV[0]
   if File.directory?(args)
     dir = File.absolute_path(args)
     dir_to_corpus(dir, corpus)
-    frequency_list(corpus)
+    puts frequency_list(corpus)
+    corpus_stats(dir, corpus)
   else
     file_content = File.read(args)
-    frequency_list(file_content)
+    puts frequency_list(file_content)
   end
 elsif ARGF
   file_content = ARGF.read
-  frequency_list(file_content)
+  puts frequency_list(file_content)
 else
   abort("  Please specify a source file or directory.")
 end
